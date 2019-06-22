@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../echarts.min.js"></script>
+    <script src="data.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        html,body{
+            width: 100%;
+            height: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+
+        }
+    </style>
+</head>
+<body>
+<div class="container"></div>
+<script>
+    let container=document.querySelector('.container');
+    let pie =echarts.init(container);
+    let selected={};
+    let series=[];
+
+    categories.forEach(category=>{
+        let movies =data.filter(ele=>ele[4].includes(category));
+        if(category=="全部"){
+            selected[category]=true;
+        }else{
+            selected[category]=false;
+        }
+
+        let obj={
+            name: category,
+            data: category=='全部' ? data:movies,
+            type: 'scatter'
+        };
+        series.push(obj);
+
+    });
+
+    let option ={
+        backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.9, [{
+            offset:0.5,
+            color: '#f7f8fa'
+        }, {
+            offset:1,
+            color: '#cdd0d5'
+        }]),
+        title: {
+            text: 'top250',
+
+        },
+        symbolSize: function (data) {
+            return Math.ceil(data[2]) / 10;
+        },
+
+        legend: {
+            type:'scroll',
+            data: categories,
+            selected,
+            selectedMode:'single',
+            top:20,
+        },
+        xAxis: {
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+            }
+        },
+        yAxis: {
+            splitLine: {
+                lineStyle: {
+                    type: 'dashed'
+                }
+            },
+            scale: true
+        },
+        series,
+        tooltip : {
+            trigger: 'item',
+            formatter: function (params) {
+                let data=params.data;
+                return`${data[3]}<br>
+                       ${data[4]}<br>
+                        ${data[2]}`;
+
+            }
+        },
+    };
+    pie.setOption(option);
+</script>
+</body>
+</html>
